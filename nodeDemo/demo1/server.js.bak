@@ -3,8 +3,8 @@ var fs      = require("fs");
 var count = 0;
 var clients = [];
 var server = http.createServer({
-	key:  fs.readFileSync(__dirname +"/certfi/28534359-localhost_1234.key"),
-    cert: fs.readFileSync(__dirname +"/certfi/28534359-localhost_1234.cert")},
+	key:  fs.readFileSync(__dirname +"/certfi/1346656-54.172.25.48_8080.key"),
+    cert: fs.readFileSync(__dirname +"/certfi/1346656-54.172.25.48_8080.cert")},
 function(request, response) {
 	console.log("Server created");
 	

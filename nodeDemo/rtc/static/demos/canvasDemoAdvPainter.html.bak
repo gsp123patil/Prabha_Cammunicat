@@ -20,7 +20,7 @@
 	var paint = false;
 	
 	var ip = window.location.hostname;
-		var ws = new WebSocket('ws://'+ip+':1234', 'echo-protocol');
+		var ws = new WebSocket('wss://'+ip+':1234', 'echo-protocol');
     	 // Variables to keep track of the touch position
     var touchX,touchY;
     
