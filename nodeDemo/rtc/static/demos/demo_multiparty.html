@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Multiparty Chatroom</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+         <link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+
+        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+        <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/demo_room.css" />
+        <script type="text/javascript" src="js/demo_multiparty.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="css_menu/style21.css" />
+        <style>
+        	tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+		
+		.selectedMark{
+			background: white;
+		}
+        	
+        	
+        </style>
+    </head>
+
+    <body onload="appInit()">
+    	    	<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr class="ca-menu">
+				<td >
+                        <a href="demo_instant_messaging.html">
+                                <h2 class="ca-main" >Instant Messaging</h2>
+                               
+                        </a>
+                    </td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_data_channel_messaging.html">  <h2 class="ca-main" > Data Channel Messaging </h2></a></td>
+
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_instant_messaging_rooms.html">  <h2 class="ca-main">Instant Messaging With Rooms </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_video_only.html">  <h2 class="ca-main" >Video Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_audio_only.html">  <h2 class="ca-main" >Audio Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_audio_video.html">  <h2 class="ca-main" >Video+Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_audio_video_simple.html">  <h2 class="ca-main" >Simple Video and Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td style="background: grey;"><a href="demo_multiparty.html">  <h2 class="ca-main" style="color: black;">Multiparty Chatroom </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_data_channel_filesharing.html">  <h2 class="ca-main">File-sharing </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="canvasDemoAdvPainter.html">  <h2 class="ca-main">Draw Diagrames </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="canvasDemoImage1.html">  <h2 class="ca-main">Image Galary </h2></a></td>
+			</tr>
+
+		</table>
+    	
+    	<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+        <div id="fullpage"  class="boxCommon">
+            <video id="box0" class="transit boxCommon thumbCommon easyRTCMirror" muted="muted" volume="0" ></video>
+            <video id="box1" class="transit boxCommon thumbCommon" style="visibility:hidden"></video>
+            <video id="box2" class="transit boxCommon thumbCommon" style="visibility:hidden"></video>
+            <video id="box3" class="transit boxCommon thumbCommon" style="visibility:hidden"></video>
+            <div id="textentryBox" onsubmit="sendText()" style="display:none" >
+                <input type="text" id="textentryField"  class="transit boxcommon" /><br>
+                <button id="textentrySubmit" style="float:right;margin-right:1em" onclick="sendText()">Send</button>
+                <button id="textentryCancel" style="float:left;margin-left:1em" onclick="cancelText()">Cancel</button>
+            </div>
+
+            <img id="killButton" class="transit boxCommon" onclick="killActiveBox()" src="images/button_close.png" style="display:none;z-index:3" alt="close button" />
+            <img id="muteButton" class="transit boxCommon" onclick ="muteActiveBox()" src="images/button_mute.png" style="display:none;z-index:3" alt="mute button" />
+            <img id="textEntryButton" class="transit boxCommon" onclick ="showTextEntry()" src="images/textEntry.png" style="z-index:3;display:none" alt="text button" />
+        </div>
+        </div>
+    </body>
+</html>

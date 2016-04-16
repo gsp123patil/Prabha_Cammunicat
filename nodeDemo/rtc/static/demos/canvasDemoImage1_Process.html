@@ -1,0 +1,528 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<script type="text/javascript" src="js/prettify/jquery.min.js"></script>
+		<script src="js/prettify/kinetic-v5.1.0.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+		<link rel="stylesheet" type="text/css" href="css/landing.css" />
+		
+		<link rel="stylesheet" type="text/css" href="css_menu/style21.css" />
+		<style>
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+			tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+		
+		.selectedMark{
+			background: white;
+		}
+		</style>
+	</head>
+	<body onmousedown="return true;">
+		<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr class="ca-menu">
+				<td >
+                        <a href="demo_instant_messaging.html">
+                                <h2 class="ca-main" >Instant Messaging</h2>
+                               
+                        </a>
+                    </td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_data_channel_messaging.html">  <h2 class="ca-main" > Data Channel Messaging </h2></a></td>
+
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_instant_messaging_rooms.html">  <h2 class="ca-main">Instant Messaging With Rooms </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_video_only.html">  <h2 class="ca-main" >Video Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_audio_only.html">  <h2 class="ca-main" >Audio Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_audio_video.html">  <h2 class="ca-main" >Video+Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_audio_video_simple.html">  <h2 class="ca-main" >Simple Video and Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_multiparty.html">  <h2 class="ca-main">Multiparty Chatroom </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_data_channel_filesharing.html">  <h2 class="ca-main"  >File-sharing </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="canvasDemoAdvPainter.html">  <h2 class="ca-main" >Draw Diagrames </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td style="background: grey;"><a href="canvasDemoImage1.html">  <h2 class="ca-main" style="color: black;">Image Galary </h2></a></td>
+			</tr>
+
+		</table>
+    	
+    	<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+		
+		
+		<div id="container">
+
+			<div id="main">
+				<!-- Main Content -->
+
+				
+				<h2 class="textColorWhite">Image Galary</h2>
+				<hr />
+		<span class="textColorWhite">Image File ::
+		<input type="file" id="upFile" />
+		</span> 
+		<br/>
+		<button id="upFileBut">
+			Upload
+		</button>
+		<br/>
+		<br/>
+		<br/>
+		<div id="loaderDiv"></div>
+		<div id="innercontainer" width="600" height= "500" style="border: 1px solid white;display: inline-block;"></div>
+
+		</div>
+		</div>
+		
+
+		<script>
+			var ip = window.location.hostname;
+			var ws = new WebSocket('wss://'+ip+':1234', 'echo-protocol');
+
+			var sources = {};
+			var incre = 0;
+			var incr = 0
+			
+			//var imgNameGen;
+			var stage;
+			if (ws) {
+
+				ws.addEventListener("message", function(event) {
+					var e1 = JSON.parse(event.data);
+					// var bytearray = new Uint8Array(event.data);
+					// var e1 = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(event.data)));
+					//sources.add(e1);
+
+					for (name1 in e1) {
+						if (e1.hasOwnProperty(name1)) {
+							if (name1 == 'imagUploadStart') {
+								$("#loaderDiv").html("<img src='images/loading_animation.gif'></img>");
+							}
+							
+							if (name1 == 'imagUploadEnd') {
+								$("#loaderDiv").html("").hide();
+							}
+							
+							if (name1 == 'achorMove') {
+							if(e1[name1].eventTYpe == "mousedown"){
+									var achorIdSelector = '#'+e1[name1].achorId;
+									//console.log(stage.find(achorIdSelector));								
+									var achorIn = stage.find(achorIdSelector);	
+									achorIn[0].parent.setDraggable(false);
+									achorIn[0].moveToTop();
+									achorIn[0].parent.moveToTop();
+							}
+							else if(e1[name1].eventTYpe == "dragend"){
+									var achorIdSelector = '#'+e1[name1].achorId;
+									//console.log(stage.find(achorIdSelector));								
+									var achorIn = stage.find(achorIdSelector);
+									achorIn[0].parent.setDraggable(true);
+									achorIn[0].getLayer().draw();
+							}														
+							else{	
+								console.log(e1[name1]);
+																
+								var groupIdSelector = '#'+e1[name1].gropuId;
+								console.log(stage.find(groupIdSelector));								
+								var groupIn = stage.find(groupIdSelector)[0];
+								
+								var topLeft = groupIn.find(groupIdSelector+"_0")[0];
+					var topRight = groupIn.find(groupIdSelector+"_1")[0];
+					var bottomRight = groupIn.find(groupIdSelector+"_2")[0];
+					var bottomLeft = groupIn.find(groupIdSelector+"_3")[0];
+								
+								
+					switch (e1[name1].achorName) {
+						case 'topLeft':
+							topRight.y(e1[name1].achorY);
+							bottomLeft.x(e1[name1].achorX);
+							break;
+						case 'topRight':
+							topLeft.y(e1[name1].achorY);
+							bottomRight.x(e1[name1].achorX);
+							break;
+						case 'bottomRight':
+							bottomLeft.y(e1[name1].achorY);
+							topRight.x(e1[name1].achorX);
+							break;
+						case 'bottomLeft':
+							bottomRight.y(e1[name1].achorY);
+							topLeft.x(e1[name1].achorX);
+							break;
+						case 'close':
+							destroy();
+							break;
+
+					}
+								var achorerSelectorerer= "#"+e1[name1].achorId;
+							groupIn.find(achorerSelectorerer)[0].x(e1[name1].achorX);
+							groupIn.find(achorerSelectorerer)[0].y(e1[name1].achorY);
+								
+								var imageIn = groupIn.find('.image')[0];
+								imageIn.setPosition(e1[name1].topLeftPos);
+								var widthIn = e1[name1].topRightX - e1[name1].topLeftX;								
+								var heightIn = e1[name1].bottomLeftY - e1[name1].topLeftY;
+								if (widthIn && heightIn) {
+									imageIn.setSize({
+										width : widthIn,
+										height : heightIn
+									});
+								groupIn.getParent().draw();
+								//this.parent.parent.draw();
+							}
+																
+					}			
+								/*
+								var achorIdSelector = '#'+e1[name1].achorId;
+																//console.log(stage.find(achorIdSelector));								
+																var achorIn = stage.find(achorIdSelector);	
+																
+															if(e1[name1].eventTYpe == "dragMove"){
+																update(achorIn[0]);
+																achorIn[0].getLayer().draw();
+															}							
+															if(e1[name1].eventTYpe == "mousedown"){
+																achorIn[0].parent.setDraggable(false);
+																achorIn[0].moveToTop();
+															}
+															if(e1[name1].eventTYpe == "dragend"){
+																achorIn[0].parent.setDraggable(true);
+																achorIn[0].getLayer().draw();
+															}*/
+								
+							
+						
+							
+							} else {
+								if (!sources.hasOwnProperty(name1)) {
+									//console.log(name1+"Name:----"+e1);
+									//imgNameGen = name1;
+									sources[name1] = e1[name1];
+								} else {
+									//imgNameGen = incr+name1;
+									sources[incr+name1] = e1[name1];
+									incr++;
+								}
+								console.log(sources);
+								loadImages(sources, initStage);
+								
+								//var wsImageUploadEnd = {"imagUploadEnd":{}};							
+								//ws.send(JSON.stringify(wsImageUploadEnd));
+								
+							}
+						}
+
+					}
+					console.log("In WS....");
+					
+				});
+
+				$('#upFileBut').click(function() {
+					var imgName = $('#upFile')[0].value.split(/(\\|\/)/g).pop().split('.')[0];
+					var imgValue = $('#upFile');
+						var wsImageUploadStart = {"imagUploadStart":{}};							
+						ws.send(JSON.stringify(wsImageUploadStart));
+					var file = imgValue[0].files[0];
+					var imageType = /image.*/;
+
+					if (file.type.match(imageType)) {
+
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							var sources1 = {};
+							//sources.push({imgName :reader.result});
+
+							//var Ab = _base64ToArrayBuffer(reader.result);
+							sources1[imgName] = reader.result;
+
+							// Length of Source Json
+							//	var sourceslen = sources.length;
+							//var key, count = 0;
+							//for(key in sources) {
+							//  if(sources.hasOwnProperty(key)) {
+							//    count++;
+							//  }
+							//}
+
+							// var bytearray = new Uint8Array(count);
+
+							// for (var i=0;i<count;++i) {
+							//bytearray[i] = sources[i];
+							//for(key in sources) {
+							//  if(sources.hasOwnProperty(key)) {
+							//    bytearray[i] = sources[key];
+							//  }
+							//}
+							//}
+
+							// ws.send(bytearray.buffer);
+							
+							
+							
+							ws.send(JSON.stringify(sources1));
+							
+
+							//ws.send(JSON.stringify(sources));
+							//loadImages(sources, initStage);
+							// Add the image to the page.
+							//fileDisplayArea.appendChild(img);
+						}
+						reader.readAsDataURL(file);
+
+						//loadImages(sources, initStage);
+					} else {
+						fileDisplayArea.innerHTML = "File not supported!";
+					}
+					$('#imgName').val("");
+					$("#upFile").replaceWith($("#upFile").clone());
+
+				});
+
+				function update(activeAnchor) {
+					//console.log("activeAnchor"+activeAnchor.id());
+					var group = activeAnchor.getParent();
+
+					var topLeft = group.find('.topLeft')[0];
+					var topRight = group.find('.topRight')[0];
+					var bottomRight = group.find('.bottomRight')[0];
+					var bottomLeft = group.find('.bottomLeft')[0];
+					var image = group.find('.image')[0];
+
+					var anchorX = activeAnchor.x();
+					var anchorY = activeAnchor.y();
+
+					// update anchor positions
+					switch (activeAnchor.name()) {
+						case 'topLeft':							
+							topRight.y(anchorY);
+							bottomLeft.x(anchorX);
+							break;
+						case 'topRight':
+							topLeft.y(anchorY);
+							bottomRight.x(anchorX);
+							break;
+						case 'bottomRight':							
+							bottomLeft.y(anchorY);
+							topRight.x(anchorX);
+							break;
+						case 'bottomLeft':							
+							bottomRight.y(anchorY);
+							topLeft.x(anchorX);
+							break;
+						case 'close':
+							destroy();
+							break;
+
+					}
+
+					image.setPosition(topLeft.getPosition());
+
+					var width = topRight.x() - topLeft.x();
+					var height = bottomLeft.y() - topLeft.y();
+					if (width && height) {
+						image.setSize({
+							width : width,
+							height : height
+						});
+					}
+					console.log("Gruoup ID"+ group.id() );
+					console.log("Gruoup "+ group);
+					console.log("Width"+ width);
+					console.log("height"+ height);
+
+					var wsSendForZoomer = {"achorMove":{"achorId": activeAnchor.id(),"gropuId": group.id(),"topLeftPos": topLeft.getPosition(),
+					 "topRightX": topRight.x(),"topLeftX": topLeft.x(), 
+					 "bottomLeftY": bottomLeft.y(), "topLeftY": topLeft.y(),
+					 "achorX":anchorX, "achorY":anchorY, "achorName": activeAnchor.name() }};
+					ws.send(JSON.stringify(wsSendForZoomer));
+					
+				}
+
+				function addAnchor(group, x, y, name, ider) {
+					var stage = group.getStage();
+					var layer = group.getLayer();
+
+				var	anchor = new Kinetic.Circle({
+						x : x,
+						y : y,
+						stroke : '#666',
+						fill : '#ddd',
+						strokeWidth : 2,
+						radius : 8,
+						name : name,
+						draggable : true,
+						dragOnTop : false,
+						id: ider						
+					});
+
+					anchor.on('dragmove', function() {
+						/* var achorMove = {
+							 'achorMove' : {
+								 'x' : this.attrs.x,
+								 'y' : this.attrs.y,
+								 'namer': this.attrs.name								
+							 }
+						 };
+						 ws.send(JSON.stringify(achorMove));
+						*/ 
+
+						//var wsSendForZoomer = {"achorMove":{"achorId": activeAnchor.id(),"gropuId": group.id(),"topLeftPos": topLeft.getPosition(), "topRightX": topRight.x(),"topLeftX": topLeft.x(), "bottomLeftY": bottomLeft.y(), "topLeftY": topLeft.y()}};
+						//console.log("Anchor Id:::"+this.id());
+						update(this);
+						//var wsSendForZoomer = {"achorMove":{"eventTYpe": "dragMove","achorId": this.id()}};
+						//console.log(wsSendForZoomer);
+						//ws.send(JSON.stringify(wsSendForZoomer));						
+						//console.log("gggggggg:-----"+this);
+						
+						//this.parent.parent.draw();
+					});
+					anchor.on('mousedown touchstart', function() {
+						var wsSendForZoomerMouseDown = {"achorMove":{"eventTYpe": "mousedown","achorId": this.id()}};
+						//console.log(wsSendForZoomerMouseDown);
+						ws.send(JSON.stringify(wsSendForZoomerMouseDown));		
+						
+						//group.setDraggable(false);
+						//this.moveToTop();
+					});
+					anchor.on('dragend', function() {
+						var wsSendForZoomerMouseDragEnd = {"achorMove":{"eventTYpe": "dragend","achorId": this.id()}};
+						//console.log(wsSendForZoomerMouseDragEnd);
+						ws.send(JSON.stringify(wsSendForZoomerMouseDragEnd));	
+												
+						//group.setDraggable(true);
+						//this.parent.parent.draw();
+					});
+					// add hover styling
+					anchor.on('mouseover', function() {
+						var layer = this.getLayer();
+						document.body.style.cursor = 'pointer';
+						this.setStrokeWidth(4);
+						layer.draw();
+					});
+					anchor.on('mouseout', function() {
+						var layer = this.getLayer();
+						document.body.style.cursor = 'default';
+						this.strokeWidth(2);
+						layer.draw();
+					});
+
+					group.add(anchor);
+				}
+
+				function loadImages(sources, callback) {
+					var images = {};
+					var loadedImages = 0;
+					var numImages = 0;
+					for (var src in sources) {
+						numImages++;
+					}
+					for (var src in sources) {
+						images[src] = new Image();
+						images[src].onload = function() {
+							if (++loadedImages >= numImages) {
+								callback(images);
+							}
+						};
+						images[src].src = sources[src];
+					}
+				}
+
+				function initStage(images) {
+					stage = new Kinetic.Stage({
+						container : 'innercontainer',
+						width : "600",
+						height : "500"
+					});
+
+					console.log(images);
+					var layer = new Kinetic.Layer();
+					var group = [];
+
+					var j = 10;
+					
+					for (var i in images) {
+						console.log(i);	
+						group[i] = new Kinetic.Group({
+							x : 270 - j,
+							y : 100 + j,
+							draggable : true,
+							id : i
+						});
+
+						var darthVaderImg = new Kinetic.Image({
+							x : 0,
+							y : 0,
+							image : images[i],
+							width : 200,
+							height : 138,
+							name : 'image',
+							
+						});
+
+						group[i].add(darthVaderImg);
+						addAnchor(group[i], 0, 0, 'topLeft', i+"_0");
+						addAnchor(group[i], 200, 0, 'topRight',i+"_1");
+						addAnchor(group[i], 200, 138, 'bottomRight',i+"_2");
+						addAnchor(group[i], 0, 138, 'bottomLeft', i+"_3");
+						//addAnchor(group[i], 100, 0, 'close');
+
+						group[i].on('dragstart', function() {
+							this.moveToTop();
+						});
+
+						layer.add(group[i]);
+						j = j + 50;
+					}
+
+					stage.add(layer);
+					stage.draw();
+				}
+
+				loadImages(sources, initStage);
+
+			}
+
+			function _base64ToArrayBuffer(base64) {
+				var binary_string = window.atob(window.btoa(base64));
+				var len = binary_string.length;
+				var bytes = new Uint8Array(len);
+				for (var i = 0; i < len; i++) {
+					var ascii = binary_string.charCodeAt(i);
+					bytes[i] = ascii;
+				}
+				return bytes.buffer;
+			}
+		</script>
+
+	</body>
+</html>

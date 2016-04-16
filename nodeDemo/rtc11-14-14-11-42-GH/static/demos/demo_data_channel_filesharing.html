@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!--skip-->
+		<title>File-sharing</title>
+		<link rel="stylesheet" type="text/css" href="css/landing.css" />
+		<link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+		<!--hide-->
+
+		<!-- Prettify Code -->
+		<script type="text/javascript" src="js/prettify/prettify.js"></script>
+		<link rel="stylesheet" type="text/css" href="js/prettify/prettify.css" />
+		<script type="text/javascript" src="js/prettify/loadAndFilter.js"></script>
+		<script type="text/javascript" src="js/prettify/jquery-1.9.1.min.js"></script>
+
+		<!--show-->
+		<!-- Assumes global locations for socket.io.js and easyrtc.js -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
+		<script type="text/javascript" src="/easyrtc/easyrtc_ft.js"></script>
+		<script type="text/javascript" src="js/demo_data_channel_filesharing.js"></script>
+
+		<!--hide-->
+		<!-- Styles used within the demo -->
+		<style type="text/css">
+			.alert img {
+				float: left;
+				padding-right: 10px;
+			}
+
+			.peerblock {
+				width: 800px;
+				border-radius: 2px;
+				border: 1px solid gray;
+			}
+
+			.receiveBlock {
+				width: 500px;
+				margin: 10px;
+				display: inline-block;
+			}
+			.dragndrop {
+				display: inline-block;
+				padding: 2em;
+				margin: 2px;
+				border: 2px solid black;
+				border-radius: 5px;
+			}
+			.dragndropStatus {
+				display: inline-block;
+			}
+			.connecting {
+				background-color: yellow;
+			}
+			.usesSockets {
+				background-color: pink;
+			}
+			.notConnected {
+				visibility: hidden;
+			}
+			.connected {
+				background-color: #e0ffe0;
+				color: black;
+			}
+			.notConnected:hover {
+				margin: 1px;
+				border-width: 3px;
+			}
+			.connected:hover {
+				margin: 1px;
+				border-width: 3px;
+			}
+			.connectButton {
+				padding: 2em;
+			}
+			tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+		
+		.selectedMark{
+			background: white;
+		}
+		</style>
+		<!--show-->
+	</head>
+	<body onload="connect()">
+		<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr>
+				<td >				
+				<a href="demo_instant_messaging.html"> Instant Messaging </a></td>
+			</tr>
+			<tr>
+				<td>					
+				<a href="demo_data_channel_messaging.html"> Data Channel Messaging </a>	</td>
+			</tr>
+			<tr>
+				<td><a href="demo_instant_messaging_rooms.html">Instant Messaging with Rooms </a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_video_only.html">Video Only</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_audio_only.html">Audio Only</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_audio_video_simple.html">Simple Video and Audio</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_audio_video.html">Video and Audio</a></td>
+			</tr>			
+			<tr>
+				<td><a href="demo_multiparty.html">Multiparty Chatroom</a></td>
+			</tr>
+			<tr>
+				<td class="selectedMark"><a href="demo_data_channel_filesharing.html">File-sharing</a></td>
+			</tr>
+			<tr>
+				<td><a href="canvasDemoAdvPainter.html">Draw Diagrames</a></td>
+			</tr>
+			<tr>
+				<td><a href="canvasDemoImage1.html">Image Galary</a></td>
+			</tr>
+
+		</table>
+    	
+    	<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+		<!--hide-->
+		<div id="container">
+
+			<div id="main">
+				<!-- Main Content -->
+
+				
+				<h2 class="textColorWhite">File Sharing</h2>
+				<hr />
+				<!--show-->
+				<div id="iam" class="textColorWhite">
+					Obtaining ID...
+				</div>
+				<BR />
+				<div id="peerZone" class="textColorWhite" ></div>
+
+				<!--hide-->
+				<hr />
+
+			</div>
+		</div>
+		</div>
+		<!--show-->
+	</body>
+</html>

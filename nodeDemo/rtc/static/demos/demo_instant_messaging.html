@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <!--skip-->
+        <title>Instant Messaging</title>
+        <link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+
+        <!--hide-->
+        <link rel="stylesheet" type="text/css" href="css/landing.css" />
+
+        <!-- Prettify Code--> 
+        <script type="text/javascript" src="js/prettify/prettify.js"></script>
+        <link rel="stylesheet" type="text/css" href="js/prettify/prettify.css" />
+        <script type="text/javascript" src="js/prettify/loadAndFilter.js"></script>
+        <script type="text/javascript" src="js/prettify/jquery.min.js"></script>
+        <!--show-->
+        <!-- Assumes global locations for socket.io.js and easyrtc.js --> 
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
+        <script type="text/javascript" src="js/demo_instant_messaging.js"></script>
+        
+          <link rel="stylesheet" type="text/css" href="css_menu/style21.css" />
+        <!--hide-->
+        <!-- Styles used within the demo -->
+        <style type="text/css">
+            #stuffToSend {width:300px;}
+            #sendMessageArea{
+                float:left;
+                width:400px;
+                padding-right:20px;
+            }
+            #sendMessageText{
+                width:100%;
+            }
+            #conversation {
+                height:300px;
+                border:solid 1px gray;
+                overflow-y:scroll;
+            }
+            
+            	
+		tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+		
+		.selectedMark{
+			background: white;
+		}
+	
+        </style>
+        <!--show-->
+    </head>
+    <body onload="connect()">
+    	<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr class="ca-menu">
+				<td style="background: grey;">
+                        <a href="demo_instant_messaging.html">
+                                <h2 class="ca-main" style="color: black;">Instant Messaging</h2>
+                               
+                        </a>
+                    </td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_data_channel_messaging.html">  <h2 class="ca-main"> Data Channel Messaging </h2></a></td>
+
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_instant_messaging_rooms.html">  <h2 class="ca-main">Instant Messaging With Rooms </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_video_only.html">  <h2 class="ca-main">Video Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_audio_only.html">  <h2 class="ca-main">Audio Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_audio_video.html">  <h2 class="ca-main">Video+Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_audio_video_simple.html">  <h2 class="ca-main">Simple Video and Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_multiparty.html">  <h2 class="ca-main">Multiparty Chatroom </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_data_channel_filesharing.html">  <h2 class="ca-main">File-sharing </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="canvasDemoAdvPainter.html">  <h2 class="ca-main">Draw Diagrames </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="canvasDemoImage1.html">  <h2 class="ca-main">Image Galary </h2></a></td>
+			</tr>
+
+		</table>
+
+	
+    	
+    	<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+        <!--hide-->
+        <div id="container" >
+          
+          
+                <h2 class="textColorWhite"> Messaging Demo</h2>
+                <hr>
+                <!--show-->
+                <div id="sendMessageArea">
+                    <div id="iam" class="textColorWhite">Obtaining ID...</div>
+                    <textarea id="sendMessageText"></textarea>
+                    <div id="otherClients"></div>
+                </div>
+                <div id="receiveMessageArea" class="textColorWhite">
+                    Received Messages:
+                    <div id="conversation" class="textColorWhite"></div>
+                </div>
+
+                <!--hide-->
+            
+             
+
+                <!-- End Main Content -->
+            </div>
+            <!--hide-->
+            
+        </div>
+     
+        <!--show-->
+    </body>
+</html>

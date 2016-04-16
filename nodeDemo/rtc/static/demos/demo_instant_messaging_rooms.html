@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <!--skip-->
+        <title>Instant Messaging & Rooms </title>
+        <link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+
+        <!--hide-->
+        <link rel="stylesheet" type="text/css" href="css/landing.css" />
+
+        <!-- Prettify Code -->
+        <script type="text/javascript" src="js/prettify/prettify.js"></script>
+        <link rel="stylesheet" type="text/css" href="js/prettify/prettify.css" />
+        <script type="text/javascript" src="js/prettify/loadAndFilter.js"></script>
+        <script type="text/javascript" src="js/prettify/jquery.min.js"></script>
+        <!--show-->
+        <!-- Assumes global locations for socket.io.js and easyrtc.js -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
+        <script type="text/javascript" src="js/demo_instant_messaging_rooms.js"></script>
+                
+        <link rel="stylesheet" type="text/css" href="css_menu/style21.css" />
+        <!--hide-->
+        <!-- Styles used within the demo -->
+        <style type="text/css">
+            #stuffToSend {
+                width:300px;
+            }
+            #sendMessageArea{
+                float:left;
+                width:400px;
+                padding-right:20px;
+            }
+            #sendMessageText{
+                width:100%;
+            }
+            #conversation {
+                height:150px;
+                border:solid 1px gray;
+                overflow-y:scroll;
+            }
+            .roomDiv {
+                margin-bottom: 15px;
+                background-color: antiquewhite;
+            }
+            .roomOccupants{
+                margin-left: 20px;
+            }
+            #main.connected>.preconnection{
+                display:none;
+            }
+            #main.notconnected>.postconnection{
+                display:none;
+            }
+            .quickJoin {
+                display: inline-block;
+            }
+            #quickJoinBlock {
+                display: inline-block;
+            }
+            	tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+		
+		.selectedMark{
+			background: white;
+		}
+        </style>
+        <!--show-->
+    </head>
+    <body onload="initApp();" >
+    	<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr class="ca-menu">
+				<td >
+                        <a href="demo_instant_messaging.html">
+                                <h2 class="ca-main" >Instant Messaging</h2>
+                               
+                        </a>
+                    </td>
+			</tr>
+			<tr class="ca-menu">
+				<td ><a href="demo_data_channel_messaging.html">  <h2 class="ca-main" > Data Channel Messaging </h2></a></td>
+
+			</tr>
+			<tr class="ca-menu">
+				<td style="background: grey;"><a href="demo_instant_messaging_rooms.html">  <h2 class="ca-main" style="color: black;">Instant Messaging With Rooms </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_video_only.html">  <h2 class="ca-main">Video Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_audio_only.html">  <h2 class="ca-main">Audio Only </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_audio_video.html">  <h2 class="ca-main">Video+Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_audio_video_simple.html">  <h2 class="ca-main">Simple Video and Audio </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_multiparty.html">  <h2 class="ca-main">Multiparty Chatroom </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="demo_data_channel_filesharing.html">  <h2 class="ca-main">File-sharing </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="canvasDemoAdvPainter.html">  <h2 class="ca-main">Draw Diagrames </h2></a></td>
+			</tr>
+			<tr class="ca-menu">
+				<td><a href="canvasDemoImage1.html">  <h2 class="ca-main">Image Galary </h2></a></td>
+			</tr>
+
+		</table>
+    	
+    	<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+        <!--hide-->
+        <div id="container">
+           
+            <div id="main">
+
+                <!-- Main Content -->
+                
+                <h2 class="textColorWhite">Messaging And Rooms</h2>
+                <hr />
+                <!--show-->
+               <div class="preconnection textColorWhite">
+              <!--      Username: <input type="text" id="userNameField" />
+                    Password: <input type="text" id="credentialField" />
+				-->	
+                    <div >
+                        <button id="connectButton" onclick="connect();">Connect</button>
+                    </div>
+                    <hr>
+                </div>
+                <div class="postconnection">
+                    <button onclick="disconnect();">Disconnect from server.</button>
+                </div>
+                <div class="textColorWhite">
+                    Presence:
+                    <input type="radio" name="presence" onclick="setPresence('away');"/>away
+                    <input type="radio" name="presence" checked onclick="setPresence('chat');"/>chat
+                    <input type="radio" name="presence" onclick="setPresence('dnd');"/>dnd
+                    <input type="radio" name="presence" onclick="setPresence('xa');"/>xa
+                    <input type="text" onkeyup="updatePresenceStatus(this.value);" />
+                </div>
+                <hr>
+                <div class="textColorWhite">
+                    Quick Join -
+
+                    <div id="quickJoinBlock"></div> <button onclick="refreshRoomList();"> Refresh</button>
+                    <button onclick="addRoom(null, null, true);">or join </button>
+                    <input id="roomToAdd" type="text" size="20" />
+                    <br>
+                    Optional room parameters<input id="optRoomParms" type="text" size="20"/>
+
+                </div>
+
+                <div class="postconnection" class="textColorWhite">
+                    <hr>
+                    <div id="sendMessageArea">
+
+                        <div id="iam">Not connected yet</div>
+                        <textarea id="sendMessageText" placeholder="Enter your message here"></textarea>
+
+                        Rooms:
+                        <div id="rooms"></div>
+                    </div>
+                    <div id="receiveMessageArea">
+                        Received Messages:
+                        <div id="conversation" class="textColorWhite"></div>
+                    </div>
+                </div>
+
+                <hr>
+               <!-- <div class="textColorWhite">
+
+                    <h3> Adding api fields</h3>
+                    <input type="text" id="apiroomname" placeholder="room name">
+                    <input type="text" id="apifieldname" placeholder="field name"><br>
+                    <input size="50" type="text" id="apifieldvalue" placeholder="field value"><br>
+                    <button onclick="addApiField()">Add the api field</button>
+                </div>
+                
+                <div class="textColorWhite">
+                    <h3>Getting the list of room occupants</h3>
+                    <input type="text" id="queryRoom" placeholder="room name">
+                    <button onclick="queryRoomNames();">Dump occupant names to console</button>
+                </div>
+               -->
+
+                <div class="postconnection textColorWhite" style="visibility: hidden;">
+                    <hr>
+                    <h3>Fields from server</h3>
+                    <div id="fields">
+                    </div>
+                    <hr>
+                    <button onclick="easyrtc.getFreshIceConfig();" class="postconnection"> Get Fresh ICE configuration</button>
+
+
+                    <hr>
+                    <h3> Name To Id</h3>
+                    <div >
+                        <input id="targetName" type="text" />
+                        <button onclick="getIdsOfName();">Fetch ids</button>
+                        <div id="foundIds"></div>
+                    </div>
+                </div>
+
+                <!--hide-->
+               
+
+                <!-- End Main Content -->
+            </div>
+            <!--hide-->
+        </div>
+        </div>
+        <script type="text/javascript">
+
+        addQuickJoinButtons({
+            room1: {roomName: "room1", numberClients: " "},
+            room2: {roomName: "room2", numberClients: " "},
+            room3: {roomName: "room3", numberClients: " "}
+        }
+        );
+
+        </script>
+    </body>
+</html>

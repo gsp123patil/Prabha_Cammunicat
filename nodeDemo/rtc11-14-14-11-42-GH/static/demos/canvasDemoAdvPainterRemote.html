@@ -1,0 +1,161 @@
+<html>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+<body>
+	<button id="pen">Land To draw</button>
+	<button id="eraser">Chik of Land To Erase</button>
+	 <div id="canvasDiv"  style="width: 600; height:400; border:1px solid #000000;"></div>	
+	 <button id="clearBut"> Clear</button>
+	 
+</body>
+<script>
+	var  penFlag = false;
+	var  eraserFlag = false;
+	var clickX = new Array();
+	var clickY = new Array();
+	var clickDrag = new Array();
+	var ip = window.location.hostname;
+	var ws = new WebSocket('ws://'+ip+':1234', 'echo-protocol');
+	$("#pen").click(function(){
+		penFlag = true;
+		eraserFlag = false;
+		 clickX = new Array();
+		 clickY = new Array();
+		 clickDrag = new Array();
+	});
+	
+	$("#eraser").click(function(){
+		eraserFlag = true;
+		penFlag = false;
+		 clickX = new Array();
+		 clickY = new Array();
+		 clickDrag = new Array();
+	});
+	
+	ws.addEventListener("message",function(e){
+			//var msg = e.data;
+			var e1 = JSON.parse(e.data);
+			console.log(e1);
+			var XArr = e1.x;
+			var YArr = e1.y;
+			var cldragArry = e1.cldrag;	
+			var penFlg = e1.penFlg;
+			var erzFlg = e1.erzFlg;		
+			
+			//context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas  
+			context.save();
+  			//context.strokeStyle = "#df4b26";
+  			
+  			if(penFlg){
+  				context.strokeStyle = "#df4b26";
+  			}
+  			if(erzFlg){
+  				context.strokeStyle = "#FFFFFF";
+  			}
+  			context.lineJoin = "round";
+  			context.lineWidth = 1;
+			
+  			for(var i=0; i < XArr.length; i++) {		
+    			context.beginPath();
+    			if(cldragArry[i] && i){
+      				context.moveTo(XArr[i-1], YArr[i-1]);
+     			}else{
+       				context.moveTo(XArr[i]-1, YArr[i]);
+     			}
+     			context.lineTo(XArr[i], YArr[i]);
+     			context.closePath();
+     			context.stroke();     			
+  			}			
+  			
+	},false);	
+    
+    ws.onopen = function(evt) { 
+    
+
+
+	var canvasWidth= 600;
+	var canvasHeight =400;
+	var canvasDiv = document.getElementById('canvasDiv');
+	canvas = document.createElement('canvas');
+	canvas.setAttribute('width', canvasWidth);
+	canvas.setAttribute('height', canvasHeight);
+	canvas.setAttribute('id', 'canvas');
+	canvasDiv.appendChild(canvas);
+	if(typeof G_vmlCanvasManager != 'undefined') {
+		canvas = G_vmlCanvasManager.initElement(canvas);
+	}
+	context = canvas.getContext("2d");
+	
+	$('#canvas').mousedown(function(e){
+		if(penFlag || eraserFlag){
+  			var mouseX = e.pageX - this.offsetLeft;
+  			var mouseY = e.pageY - this.offsetTop;
+		
+  			paint = true;
+  			addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+  			redraw();
+  		}	
+	});
+	
+	$('#canvas').mousemove(function(e){
+		if(penFlag || eraserFlag){
+  		if(paint){
+    		addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+    		redraw();
+  		}
+  		}
+	});
+	$('#canvas').mouseup(function(e){
+		if(penFlag || eraserFlag){
+  			paint = false;
+  		}	
+	});
+	
+	//var clickX = new Array();
+	//var clickY = new Array();
+	//var clickDrag = new Array();
+	var paint;
+
+	function addClick(x, y, dragging)
+	{
+  		clickX.push(x);
+  		clickY.push(y);
+  		clickDrag.push(dragging);  		
+  		var pointsArray = {"x":clickX,"y":clickY,"cldrag":clickDrag,"penFlg":penFlag,"erzFlg":eraserFlag};
+  		ws.send(JSON.stringify(pointsArray));
+	}
+	
+	function redraw(){
+  		//context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+  		if(penFlag){
+  			context.strokeStyle = "#df4b26";
+  		}
+  		if(eraserFlag){
+  			context.strokeStyle = "#FFFFFF";
+  		}
+  		context.lineJoin = "round";
+  		context.lineWidth = 1;
+			
+  		for(var i=0; i < clickX.length; i++) {		
+    		context.beginPath();
+    		if(clickDrag[i] && i){
+      			context.moveTo(clickX[i-1], clickY[i-1]);
+     		}else{
+       			context.moveTo(clickX[i]-1, clickY[i]);
+     		}
+     		context.lineTo(clickX[i], clickY[i]);
+     		context.closePath();
+     		context.stroke();
+  		}
+	}
+	
+	$("#clearBut").click(function(){
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+	});
+ };	
+ 
+
+</script>
+
+	
+</html>

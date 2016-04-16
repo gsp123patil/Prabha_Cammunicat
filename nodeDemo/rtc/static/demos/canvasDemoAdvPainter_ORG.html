@@ -1,0 +1,281 @@
+<html>
+
+	<script type="text/javascript" src="js/prettify/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+	<!--<link rel="stylesheet" type="text/css" href="css/landing.css" />-->
+	<style>
+		tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+
+		.selectedMark {
+			background: white;
+		}
+		h2 {
+			display: block;
+			font-size: 1.5em;
+			-webkit-margin-before: 0.83em;
+			-webkit-margin-after: 0.83em;
+			-webkit-margin-start: 0px;
+			-webkit-margin-end: 0px;
+			font-weight: bold;
+		}
+		.textColorWhite {
+			color: white;
+		}
+		.buttonCls {
+			padding: 1px 6px;
+		}
+	</style>
+	<body>
+		<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr>
+				<td ><a href="demo_instant_messaging.html"> Instant Messaging </a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_data_channel_messaging.html"> Data Channel Messaging </a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_instant_messaging_rooms.html">Instant Messaging with Rooms </a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_video_only.html">Video Only</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_audio_only.html">Audio Only</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_audio_video_simple.html">Simple Video and Audio</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_audio_video.html">Video and Audio</a></td>
+			</tr>
+			<tr>
+				<td ><a href="demo_multiparty.html">Multiparty Chatroom</a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_data_channel_filesharing.html">File-sharing</a></td>
+			</tr>
+			<tr>
+				<td class="selectedMark"><a href="canvasDemoAdvPainter.html">Draw Diagrames</a></td>
+			</tr>
+			<tr>
+				<td><a href="canvasDemoImage1.html">Image Galary</a></td>
+			</tr>
+
+		</table>
+
+		<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+			<div id="container">
+
+				<!--<h2 class="textColorWhite">P2P Messanging Demo</h2>
+				<hr />-->
+				<button id="pen" class="buttonCls">
+					Activate Pen
+				</button>
+				<button id="eraser" class="buttonCls">
+					Activate Errazer
+				</button>
+				<div id="canvasDiv"  style="width: 600; height:400; border:1px solid #000000;background: black;"></div>
+				<button id="clearBut" class="buttonCls">
+					Clear
+				</button>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		var penFlag = false;
+		var eraserFlag = false;
+		var clickX = new Array();
+		var clickY = new Array();
+		var clickDrag = new Array();
+		var ip = window.location.hostname;
+		var ws = new WebSocket('ws://'+ip+':1234', 'echo-protocol');
+		$("#pen").click(function() {
+			penFlag = true;
+			eraserFlag = false;
+			clickX = new Array();
+			clickY = new Array();
+			clickDrag = new Array();
+			$('#pen').css("background", "blueviolet");
+			$('#eraser').css("background", "");
+		});
+
+		$("#eraser").click(function() {
+			eraserFlag = true;
+			penFlag = false;
+			clickX = new Array();
+			clickY = new Array();
+			clickDrag = new Array();
+			$('#eraser').css("background", "blueviolet");
+			$('#pen').css("background", "");
+		});
+
+		ws.addEventListener("message", function(e) {
+			//var msg = e.data;
+			var e1 = JSON.parse(e.data);
+			console.log(e1);
+			var XArr = e1.x;
+			var YArr = e1.y;
+			var cldragArry = e1.cldrag;
+			var penFlg = e1.penFlg;
+			var erzFlg = e1.erzFlg;
+
+			//context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+			context.save();
+			//context.strokeStyle = "#df4b26";
+
+			if (penFlg) {
+				context.strokeStyle = "#df4b26";
+				context.lineWidth = 1;
+			}
+			if (erzFlg) {
+				context.strokeStyle = "#000000";
+				context.lineWidth = 10;
+			}
+			context.lineJoin = "round";
+
+			for (var i = 0; i < XArr.length; i++) {
+				context.beginPath();
+				if (cldragArry[i] && i) {
+					context.moveTo(XArr[i - 1], YArr[i - 1]);
+				} else {
+					context.moveTo(XArr[i] - 1, YArr[i]);
+				}
+				context.lineTo(XArr[i], YArr[i]);
+				context.closePath();
+				context.stroke();
+			}
+
+		}, false);
+
+		ws.onopen = function(evt) {
+
+			var canvasWidth = 600;
+			var canvasHeight = 400;
+			var canvasDiv = document.getElementById('canvasDiv');
+			canvas = document.createElement('canvas');
+			canvas.setAttribute('width', canvasWidth);
+			canvas.setAttribute('height', canvasHeight);
+			canvas.setAttribute('id', 'canvas');
+			canvasDiv.appendChild(canvas);
+			if ( typeof G_vmlCanvasManager != 'undefined') {
+				canvas = G_vmlCanvasManager.initElement(canvas);
+			}
+			context = canvas.getContext("2d");
+
+			$('#canvas').bind("mousedown  touchstart", function(e) {
+				 e.preventDefault();
+				if (penFlag || eraserFlag) {
+					//var mouseX = e.pageX - this.offsetParent.offsetLeft;
+					//var mouseY = e.pageY - this.offsetTop;
+
+					var mouseX = e.pageX ;
+					var mouseY = e.pageY ;
+					var ua = navigator.userAgent.toLowerCase();
+					var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+					if(isAndroid) {
+							mouseX = e.targetTouches[0].pageX;
+							mouseY = e.targetTouches[0].pageY;
+					}
+					paint = true;
+					//addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+					//addClick(e.pageX - this.offsetParent.offsetLeft, e.pageY - this.offsetTop);
+					addClick(mouseX - this.offsetParent.offsetParent.offsetLeft, mouseY - this.offsetTop);
+					redraw();
+				}
+			});
+
+			$('#canvas').bind("mousemove  touchmove",function(e) {
+				 e.preventDefault();
+				if (penFlag || eraserFlag) {
+					if (paint) {
+						//addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+						//addClick(e.pageX - this.offsetParent.offsetLeft, e.pageY - this.offsetTop, true);
+						var mouseX = e.pageX ;
+					var mouseY = e.pageY ;
+					var ua = navigator.userAgent.toLowerCase();
+					var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+					if(isAndroid) {
+							mouseX = e.targetTouches[0].pageX;
+							mouseY = e.targetTouches[0].pageY;
+					}
+						addClick(mouseX - this.offsetParent.offsetParent.offsetLeft, mouseY - this.offsetTop, true);
+						redraw();
+					}
+				}
+			});
+			$('#canvas').bind("mouseup touchend",function(e) {
+				 e.preventDefault();
+				if (penFlag || eraserFlag) {
+					paint = false;
+				}
+			});
+
+			//var clickX = new Array();
+			//var clickY = new Array();
+			//var clickDrag = new Array();
+			var paint;
+
+			function addClick(x, y, dragging) {
+				clickX.push(x);
+				clickY.push(y);
+				clickDrag.push(dragging);
+				var pointsArray = {
+					"x" : clickX,
+					"y" : clickY,
+					"cldrag" : clickDrag,
+					"penFlg" : penFlag,
+					"erzFlg" : eraserFlag
+				};
+				ws.send(JSON.stringify(pointsArray));
+			}
+
+			function redraw() {
+				//context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+				if (penFlag) {
+					context.strokeStyle = "#df4b26";
+					context.lineWidth = 1;
+				}
+				if (eraserFlag) {
+					context.strokeStyle = "#000000";
+					context.lineWidth = 10;
+				}
+				context.lineJoin = "round";
+
+				for (var i = 0; i < clickX.length; i++) {
+					context.beginPath();
+					if (clickDrag[i] && i) {
+						context.moveTo(clickX[i - 1], clickY[i - 1]);
+					} else {
+						context.moveTo(clickX[i] - 1, clickY[i]);
+					}
+					context.lineTo(clickX[i], clickY[i]);
+					context.closePath();
+					context.stroke();
+				}
+			}
+
+
+			$("#clearBut").click(function() {
+				context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+				// Clears the canvas
+			});
+		};
+
+	</script>
+
+</html>

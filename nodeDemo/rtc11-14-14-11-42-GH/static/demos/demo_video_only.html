@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!--skip-->
+		<title>Video Only</title>
+		<link rel="stylesheet" type="text/css" href="/easyrtc/easyrtc.css" />
+
+		<!--hide-->
+		<link rel="stylesheet" type="text/css" href="css/landing.css" />
+
+		<!-- Prettify Code -->
+		<script type="text/javascript" src="js/prettify/prettify.js"></script>
+		<script type="text/javascript" src="js/prettify/loadAndFilter.js"></script>
+		<script type="text/javascript" src="js/prettify/jquery.min.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="js/prettify/prettify.css" />
+		<!--show-->
+		<!-- Assumes global locations for socket.io.js and easyrtc.js -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
+		<script type="text/javascript" src="js/demo_video_only.js"></script>
+		<!--hide-->
+		<!-- Styles used within the demo -->
+		<style type="text/css">
+			#videoDemoContainer {
+				position: relative;
+			}
+			#connectControls {
+				float: left;
+				width: 250px;
+				text-align: center;
+				border: 2px solid black;
+			}
+			#otherClients {
+				height: 200px;
+				overflow-y: scroll;
+			}
+			#selfVideo {
+				height: 225px;
+				width: 300px;
+				float: left;
+				border: 1px solid gray;
+				margin-left: 10px;
+			}
+			#callerVideo {
+				height: 225px;
+				width: 300px;
+				border: 1px solid gray;
+				margin-left: 10px;
+			}
+			#acceptCallBox {
+				display: none;
+				z-index: 2;
+				position: absolute;
+				top: 100px;
+				left: 400px;
+				border: red solid 2px;
+				background-color: pink;
+				padding: 15px;
+			}
+				tr {
+			background: black;
+		}
+		a {
+			margin-left: 5%;
+			font-weight: bolder;
+		}
+		
+		.selectedMark{
+			background: white;
+		}
+		</style>
+		<!--show-->
+	</head>
+	<body>
+		<table style="
+		height: 100%;
+		width: 15%;
+		position: absolute;
+		">
+			<tr>
+				<td >				
+				<a href="demo_instant_messaging.html"> Instant Messaging </a></td>
+			</tr>
+			<tr>
+				<td>					
+				<a href="demo_data_channel_messaging.html"> Data Channel Messaging </a>	</td>
+			</tr>
+			<tr>
+				<td><a href="demo_instant_messaging_rooms.html">Instant Messaging with Rooms </a></td>
+			</tr>
+			<tr>
+				<td  class="selectedMark"><a href="demo_video_only.html">Video Only</a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_audio_only.html">Audio Only</a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_audio_video_simple.html">Simple Video and Audio</a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_audio_video.html">Video and Audio</a></td>
+			</tr>
+			
+			<tr>
+				<td><a href="demo_multiparty.html">Multiparty Chatroom</a></td>
+			</tr>
+			<tr>
+				<td><a href="demo_data_channel_filesharing.html">File-sharing</a></td>
+			</tr>
+			<tr>
+				<td><a href="canvasDemoAdvPainter.html">Draw Diagrames</a></td>
+			</tr>
+			<tr>
+				<td><a href="canvasDemoImage1.html">Image Galary</a></td>
+			</tr>
+
+		</table>
+    	
+    	<div id="launcher" style="background: rgb(131, 129, 129);
+		width: 85%;
+		height: 100%;
+		position: relative;
+		margin-left: 15.5%;">
+		<!--hide-->
+		<div id="container">
+			<div id="main">
+				<!-- Main Content -->
+			
+				<h2 class="textColorWhite">Video Only</h2>
+					<hr />
+				<!--show-->
+				<div id="videoDemoContainer" class="textColorWhite">
+					<div id="connectControls">
+						<button id="connectButton" onclick="connect()">
+							Connect
+						</button>
+						<button id="hangupButton" disabled="disabled" onclick="hangup()">
+							Hangup
+						</button>
+						<div id="iam">
+							Not yet connected...
+						</div>
+						<br />
+						<strong>Connected users:</strong>
+						<div id="otherClients" ></div>
+					</div>
+
+					<div id="videos">
+						<video autoplay="autoplay" id="selfVideo" class="easyrtcMirror"></video>
+						<video autoplay="autoplay" id="callerVideo"></video>
+						<div id="acceptCallBox">
+							<!-- Should be initially hidden using CSS -->
+							<div id="acceptCallLabel"></div>
+							<button id="callAcceptButton" >
+								Accept
+							</button>
+							<button id="callRejectButton">
+								Reject
+							</button>
+						</div>
+					</div>
+				</div>
+				<!--hide-->
+				<br style="clear:both;" />
+				<hr />
+
+				<!-- End Main Content -->
+			</div>
+</div>
+		</div>
+		<!--show-->
+	</body>
+</html>

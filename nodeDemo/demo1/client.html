@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<script type="text/javascript">
+	var ip = window.location.hostname;
+	var ws = new WebSocket('ws://'+ip+':1234', 'echo-protocol');
+	function sendMessage(){
+		var message = document.getElementById('message').value;
+		ws.send(message);
+	}
+	
+	ws.addEventListener("message", function(e) {
+	console.log("We are in....");
+    // The data is simply the message that we're sending back
+		var msg = e.data;
+    // Append the message
+		document.getElementById('chatlog').innerHTML += '<br>' + msg;
+	});
+	
+	// Log messages from the server
+	ws.onmessage = function (e) {
+		console.log('Server: ' + e.data);
+	};
+
+</script>
+<body>
+<div id="chatlog"></div>
+<input type="text" name="message" id="message" />
+ <button onclick="sendMessage()">Send</button> 
+</body>
+</html>
